@@ -1,0 +1,9 @@
+{
+	"name": "datafactory-pavankumarmk",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f8805579-1ff5-41a0-a77c-3b7ce2980525",
+		"tenantId": "e3530d13-3c82-4672-9ece-eb3b5f899c1a"
+	}
+}
