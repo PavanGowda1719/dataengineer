@@ -1,0 +1,76 @@
+{
+	"name": "dataflow_pavan",
+	"properties": {
+		"description": "filtering and aggregating",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sales_data",
+						"type": "DatasetReference"
+					},
+					"name": "sourcedatasales"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTable1",
+						"type": "DatasetReference"
+					},
+					"name": "targettable",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ORDERNUMBER as string,",
+				"          QUANTITYORDERED as string,",
+				"          PRICEEACH as string,",
+				"          ORDERLINENUMBER as string,",
+				"          SALES as integer,",
+				"          ORDERDATE as string,",
+				"          STATUS as string,",
+				"          QTR_ID as string,",
+				"          MONTH_ID as integer,",
+				"          YEAR_ID as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false) ~> sourcedatasales",
+				"sourcedatasales filter(SALES >= 2000) ~> filter",
+				"filter aggregate(groupBy(YEAR_ID,",
+				"          MONTH_ID),",
+				"     TotalSales = sum(SALES)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          YEAR_ID as string,",
+				"          MONTH_ID as string,",
+				"          TOTALSALES as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true) ~> targettable"
+			]
+		}
+	}
+}
