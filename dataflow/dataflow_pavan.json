@@ -54,7 +54,7 @@
 				"sourcedatasales filter(SALES >= 2000) ~> filter",
 				"filter aggregate(groupBy(YEAR_ID,",
 				"          MONTH_ID),",
-				"     TotalSales = sum(SALES)) ~> aggregate1",
+				"     TOTALSALES = sum(SALES)) ~> aggregate1",
 				"aggregate1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
